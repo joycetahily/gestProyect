@@ -144,51 +144,53 @@
 
 <body>
     <div class="container">
+        <!-- Encabezado e imágenes -->
         <div class="header">
             <img src="ImagenesPW/logoItver.png" alt="logoitver">
             <h1>EncuentraTec</h1>
             <img src="ImagenesPW/logoTecnm.png" alt="logotec">
         </div>
-
         <div class="image-container">
             <img src="ImagenesPW/imagentec.jpg" alt="entradatec">
         </div>
-
         <div class="icon-container">
             <img src="ImagenesPW/pngwing.com.png" alt="logoPagina">
         </div>
 
-        <div class="welcome-text">Te damos la bienvenida a EncuentraTec</div>
-
-        <div class="selecciona-rol">Selecciona tu Rol</div>
-
-        <!-- Formulario de selección de rol y datos de usuario -->
+        <!-- Formulario de inicio de sesión -->
         <form action="controlador/controlador_iniciosesion.php" method="POST">
+            <div class="welcome-text">Te damos la bienvenida a EncuentraTec</div>
+            <div class="selecciona-rol">Selecciona tu Rol</div>
             <select class="role-text" id="role-select" name="rol" required>
-                <option value="" hidden></option>
+                <option value="" hidden>Selecciona tu rol</option>
                 <option value="alumno">Alumno</option>
                 <option value="administrador">Administrador</option>
             </select>
 
             <div class="form-group">
-                <input type="text" id="user-input" name="username" placeholder="No de Control / Correo" required>
-                <input type="password" id="password-input" name="password" placeholder="Contraseña" required>
+                <input type="text" id="user-input" name="identificador" placeholder="Número de Control o Correo" required>
+                <div class="error-message" id="control-error">El número de control o correo es incorrecto.</div>
             </div>
 
-            <button type="submit" class="btn" name="login">Iniciar sesión</button>
+            <div class="form-group">
+                <input type="password" id="password-input" name="password" placeholder="Contraseña" required>
+                <div class="error-message" id="password-error">La contraseña debe tener al menos 8 caracteres.</div>
+            </div>
+
+            <button type="submit" class="btn">Iniciar sesión</button>
         </form>
 
-        <p>¿No tienes una cuenta?
-            <button onclick="window.location.href='Registro.php'">Regístrate</button>
-        </p>
+        <p>¿No tienes una cuenta? <button onclick="window.location.href='Registro.php'">Regístrate</button></p>
     </div>
 
     <script>
-        // JavaScript para actualizar el placeholder basado en el rol seleccionado
-        document.getElementById('role-select').addEventListener('change', function() {
-            const userInput = document.getElementById('user-input');
-            userInput.placeholder = this.value === 'administrador' ? 'Correo Electrónico' : 'Número de Control';
-            userInput.type = this.value === 'administrador' ? 'email' : 'text';
+        const roleSelect = document.getElementById('role-select');
+        const userInput = document.getElementById('user-input');
+
+        // Cambia el placeholder del campo según el rol seleccionado
+        roleSelect.addEventListener('change', () => {
+            userInput.placeholder = roleSelect.value === 'alumno' ? 'Número de Control' : 'Correo Electrónico';
+            userInput.type = roleSelect.value === 'alumno' ? 'text' : 'email';
         });
     </script>
 </body>
