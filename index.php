@@ -163,7 +163,7 @@
         <div class="selecciona-rol">Selecciona tu Rol</div>
 
         <!-- Formulario de selección de rol y datos de usuario -->
-        <form action="controlador_iniciosesion.php" method="POST">
+        <form action="controlador/controlador_iniciosesion.php" method="POST">
             <select class="role-text" id="role-select" name="rol" required>
                 <option value="" hidden></option>
                 <option value="alumno">Alumno</option>
