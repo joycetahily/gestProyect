@@ -12,7 +12,7 @@ if (isset($_POST['rol'], $_POST['identificador'], $_POST['password'])) {
         $sql = $conexion->prepare("SELECT * FROM alumno WHERE numero_control = ? AND password = ?");
         $sql->bind_param("ss", $identificador, $password);
     } elseif ($rol === 'administrador') {
-        $sql = $conexion->prepare("SELECT * FROM administrador WHERE correo = ? AND password = ?");
+        $sql = $conexion->prepare("SELECT * FROM administrador WHERE correoAdmin = ? AND passwordAdmin = ?");
         $sql->bind_param("ss", $identificador, $password);
     }
 
