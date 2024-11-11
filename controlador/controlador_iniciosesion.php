@@ -1,4 +1,8 @@
 <?php
+// Activa la visualización de errores (solo en desarrollo)
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 include("C:/xampp/htdocs/EncuentraTec/modelo/conexion_BD.php");
 
 if (!empty($_POST["login"])) {
@@ -25,7 +29,11 @@ if (!empty($_POST["login"])) {
 
         if ($resultado->num_rows > 0) {
             // Redirección según el rol
-            header("Location: " . ($rol === 'alumno' ? "inicioPublicaciones.php" : "publicacionesAdmi.html"));
+            if ($rol === 'alumno') {
+                header("Location: ../inicioPublicaciones.php");
+            } else {
+                header("Location: ../publicacionesAdmi.html");
+            }
             exit;
         } else {
             echo '<div class="alerta">Usuario o contraseña incorrectos</div>';
