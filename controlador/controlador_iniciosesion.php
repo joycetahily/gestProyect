@@ -1,24 +1,39 @@
 <?php
+include("C:/xampp/htdocs/EncuentraTec/modelo/conexion_BD.php");
 
-if(!empty($_POST["rol"])){
-    if(empty($_POST["alumno"]) or empty($_POST["administrador"])){
-        echo '<div class= "alerta">Seleccione un rol</div>';
-        if(empty($_POST["rol" == "alumno"])){
-            $num_control=$_POST["num_control"];
-            $password=$_POST["password"];
-            $sql= $conexion->query("select * from alumno num_control, password where num_control ='$num_control' and password = '$password')");     
-        }else{
-            echo '<div class= "alerta">Usuario no encontrado</div>';
+if (!empty($_POST["login"])) {
+    $rol = $_POST["rol"] ?? '';
+    $username = $_POST["username"] ?? '';
+    $password = $_POST["password"] ?? '';
+
+    if ($rol && $username && $password) {
+        if ($rol === 'alumno') {
+            // Consulta para alumno
+            $stmt = $conexion->prepare("SELECT * FROM alumno WHERE num_control = ? AND password = ?");
+            $stmt->bind_param("ss", $username, $password);
+        } elseif ($rol === 'administrador') {
+            // Consulta para administrador
+            $stmt = $conexion->prepare("SELECT * FROM administrador WHERE correo = ? AND password = ?");
+            $stmt->bind_param("ss", $username, $password);
+        } else {
+            echo '<div class="alerta">Rol no válido</div>';
+            exit;
         }
-    }else {
-        if(empty($_POST["rol" == "administrador"])){
-        $correo=$_POST["correo"];
-        $password=$_POST["password"];
-        $sql= $conexion->query("select * from administrador correo, password where correo ='$correo' and password = '$password')");
-        } else{
-            echo '<div class= "alerta">Usuario no encontrado</div>';
+
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+
+        if ($resultado->num_rows > 0) {
+            // Redirección según el rol
+            header("Location: " . ($rol === 'alumno' ? "inicioPublicaciones.php" : "publicacionesAdmi.html"));
+            exit;
+        } else {
+            echo '<div class="alerta">Usuario o contraseña incorrectos</div>';
         }
+
+        $stmt->close();
+    } else {
+        echo '<div class="alerta">Por favor, completa todos los campos</div>';
     }
 }
-
 ?>
