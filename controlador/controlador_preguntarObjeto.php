@@ -1,20 +1,18 @@
 <?php
 
-if(!empty($_POST["publicar"])){
+if(!empty($_POST["publicar"])) {
     if(empty($_POST["descripcion"])){
-        $id_pregunta=$_POST["id_pregunta"];
-        $fecha_creacion=$_POST[""];
-        $contenido=$_POST["descripcion"];
-        $imagenes=$_POST["img"];
-        $sql= $conexion->query("insert into preguntarobjeto(id_pregunta, fecha_creacion, numero_control, contenido) values('','','$contenido','$imagenes')");       
-        if($datos=$sql->fetch_object()){
-            header ("location: inicioPublicaciones.php");
-        } else {
-            echo "<div class='alert alert-danger'>No se pudo realizar la publicación< /div>";
+        echo '<div class= "alerta">Escribe una pregunta</div>';
+    }else {
+        $descripcion=$_POST["descripcion"];
+        $sql= $conexion->query("insert into preguntarobjeto (id_pregunta, contenido, fecha_creacion) values('','$descripcion','')");
+        if($sql==1){
+            echo '<div class= "success">Su pregunta ha sido enviada a revisión de los administradores</div>';
+            header("Location: ../inicioPublicaciones.php");
+        }else{
+            echo '<div class= "alerta">Error de solicitud</div>';
         }
-    }else{
-        "<div class='alert alert-danger'>Ingrese algún dato< /div>";
     }
 }
-
+    
 ?>

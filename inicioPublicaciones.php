@@ -383,6 +383,7 @@
             <div class="contenedor">Descripción</div>
             <div class="contenedor">imagenes</div>
             
+            
             <!-- Sección de chat -->
             <div class="chat" id="chat">
                 <!-- Aquí se mostrarán los mensajes -->
@@ -403,7 +404,7 @@
             options.style.display = options.style.display === 'flex' ? 'none' : 'flex';
         }
         document.getElementById('logout-icon').addEventListener('click', function() {
-            window.location.href = 'inicioSesión.php';
+            window.location.href = 'index.php';
         });
 
         function abrirModal() {

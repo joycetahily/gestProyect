@@ -168,13 +168,16 @@
     </div>
 
     <?php
-        include"C:/xampp/htdocs/EncuentraTec/modelo/conexion_BD.php";
+        include("C:/xampp/htdocs/EncuentraTec/modelo/conexion_BD.php");
         include("C:/xampp/htdocs/EncuentraTec/controlador/controlador_preguntarObjeto.php");
         ?>
     
+    <form action="controlador_preguntarObjeto.php" method="POST" class="formulario" enctype="multipart/form-data">
+    <!-- Contenido del formulario -->
+
+
     <div class="container">
         <div class="back-button">&#8592;</div>
-        <form action="" method="POST" class="formulario">
         <!-- Pregunta Section -->
         <div class="question-container">
             <input type="text" id="user-input" name="descripcion" placeholder="Escribe una pregunta" required></input>
@@ -191,9 +194,9 @@
 
         <!-- Botón Publicar -->
         <button class="publish-btn" name="publicar">Publicar</button>
-        </form>
+        
     </div>
-    
+    </form>
 
     <!-- Footer -->
     <div class="footer">Instituto Tecnológico de Veracruz</div>

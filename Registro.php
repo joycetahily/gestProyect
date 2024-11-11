@@ -101,7 +101,7 @@
         }
 
         /* Botón de registro */
-        button {
+        .register-button {
             background-color: #2d2e83;
             color: white;
             padding: 10px;
@@ -118,12 +118,7 @@
             background-color: #6e6e70;
         }
 
-        .error-message {
-            color: red;
-            font-size: 12px;
-            margin-top: -7px;
-            display: none;
-        }
+       
 
         /* Link de inicio de sesión */
         .login-link {
@@ -157,14 +152,19 @@
 <body>
     <!-- Barra superior -->
     <div class="header">
-        <img src="ImagenesPW/logoTecnm.png" alt="Logo Izquierda">
+        <img src="/EncuentraTec/ImagenesPW/logoTecnm.png" alt="Logo Izquierda">
         <span>EncuentraTec</span>
-        <img src="ImagenesPW/logoItver.png" alt="Logo Derecha">
+        <img src="/EncuentraTec/ImagenesPW/logoItver.png" alt="Logo Derecha">
     </div>
 
     <!-- Contenedor de registro -->
     <div class="container">
         <h1>Te damos la bienvenida</h1>
+        <?php
+        include("C:/xampp/htdocs/EncuentraTec//modelo/conexion_BD.php");
+        include("C:/xampp/htdocs/EncuentraTec/controlador/controlador_registrar.php");
+        ?>
+        <form action="" method="POST" class="formulario">
         <div class="foto-perfil">
             <label for="foto-perfil">Foto de perfil</label>
             <input type="file" id="foto-perfil" accept="image/*">
@@ -177,134 +177,50 @@
 
         <div class="form-group">
             <label for="role-select">Selecciona tu Rol</label>
-            <select id="role-select">
+            <select id="role-select" name= "rol">
                 <option value="alumno">Alumno</option>
                 <option value="administrador">Administrador</option>
             </select>
         </div>
-        <?php
-        include("C:/xampp/htdocs/EncuentraTec/modelo/conexion_BD.php");
-        include("C:/xampp/htdocs/EncuentraTec/controlador/controlador_registrar.php");
-        ?>
-        <form action="" method="POST" class="formulario">
+        
+        
             <div id="control-container" class="form-group">
                 <label for="numero-control">Número de Control</label>
                 <input type="text" id="numero-control" name="num_control" placeholder="Num Control" maxlength="8">
-                <div class="error-message" id="control-error">Ingresa un número de control válido.</div>
+                
             </div>
             
             <div class="form-group">
                 <label for="nombre-completo">Nombre completo</label>
                 <input type="text" id="nombre-completo" name="nombre" placeholder="Nombre Completo" required>
-                <div class="error-message" id="nombre-error">Ingresa un nombre válido (solo letras y espacios).</div>
             </div>
 
             <div class="form-group">
                 <label for="correo-electronico">Correo electrónico</label>
                 <input type="email" id="correo-electronico" name="correo"placeholder="Correo electrónico" required>
-                <div class="error-message" id="email-error">Ingresa un correo válido (ejemplo@dominio.com).</div>
             </div>
 
             <div class="form-group">
                 <label for="password">Contraseña</label>
                 <input type="password" id="password"name="password" placeholder="Crea una contraseña" required>
-                <div class="error-message" id="password-error">La contraseña debe tener al menos 8 caracteres.</div>
             </div>
 
             <input class="register-button" type="submit" value="Registrar" name="registro">
-            <a href= "index.php">Salir</a>
+           
         </form>
 
-        <p class="login-link">¿Ya tienes una cuenta? <a href="index.php">Inicia Sesión</a></p>
+        <p class="login-link">¿Ya tienes una cuenta? <a href="/EncuentraTec/InicioSesión/inicioSesión.html">Inicia Sesión</a></p>
     </div>
 
     <script>
-        const fotoPerfilInput = document.getElementById('foto-perfil');
-        const previewImage = document.getElementById('preview-image');
-        const roleSelect = document.getElementById('role-select');
+       const roleSelect = document.getElementById('role-select');
         const controlContainer = document.getElementById('control-container');
-        const registerButton = document.getElementById('register-button');
-        const nombreInput = document.getElementById('nombre-completo');
-        const nombreError = document.getElementById('nombre-error');
-        const passwordInput = document.getElementById('password');
-        const passwordError = document.getElementById('password-error');
-        const emailInput = document.getElementById('correo-electronico');
-        const emailError = document.getElementById('email-error');
-        const controlInput = document.getElementById('numero-control');
-        const controlError = document.getElementById('control-error');
-
-        fotoPerfilInput.addEventListener('change', () => {
-            const file = fotoPerfilInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    previewImage.src = e.target.result;
-                    previewImage.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewImage.style.display = 'none';
-            }
-        });
 
         roleSelect.addEventListener('change', () => {
+            // Muestra/oculta el campo según el rol seleccionado
             controlContainer.classList.toggle('hidden', roleSelect.value !== 'alumno');
         });
 
-        //function validarNumeroControl(numero) {
-        //    const regex = /^\d{8}$/;
-        //    return regex.test(numero);
-        //}
-
-       // function validarCorreo(email) {
-       //     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-       //     return regex.test(email);
-        //}
-
-        //function validarNombre(nombre) {
-          //  const regex = /^[a-zA-Z\s]+$/;
-            //return regex.test(nombre);
-        //}
-
-        //registerButton.addEventListener('click', (e) => {
-          //  e.preventDefault();
-
-            //const nombre = nombreInput.value;
-            //const correo = emailInput.value;
-            //const password = passwordInput.value;
-            //const numeroControl = controlInput.value;
-
-            //if (!validarNombre(nombre)) {
-              //  nombreError.style.display = 'block';
-                //return;
-            //} else {
-              //  nombreError.style.display = 'none';
-            //}
-
-            if (roleSelect.value === 'alumno' && !validarNumeroControl(numeroControl)) {
-               controlError.style.display = 'block';
-               return;
-            } else {
-                controlError.style.display = 'none';
-            }
-
-            //if (!validarCorreo(correo)) {
-             //   emailError.style.display = 'block';
-              //  return;
-            //} else {
-            //    emailError.style.display = 'none';
-            //}
-
-            //if (password.length < 8) {
-            //    passwordError.style.display = 'block';
-             //   return;
-            //} else {
-            //    passwordError.style.display = 'none';
-            //}
-
-            //alert('Registro exitoso.');
-           // window.location.href = 'inicioSesión.html';
-        //});
     </script>
 </body>
 </html>

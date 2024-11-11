@@ -1,5 +1,4 @@
 <?php
-
 $imagen='';
 if(isset($_FILES["foto"])){
     $file = $_FILES["foto"];

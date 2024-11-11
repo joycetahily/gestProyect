@@ -355,7 +355,7 @@
             }
 
             // Si todos los campos están completos, redirigir
-            window.location.href = 'inicioPublicaciones.html';
+            window.location.href = 'inicioPublicaciones.php';
         });
 
         // Limpia el borde rojo al empezar a llenar el campo
