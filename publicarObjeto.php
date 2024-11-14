@@ -17,8 +17,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
+            /* Eliminado height: 100vh para permitir scroll */
+            /* height: 100vh; */
             zoom: 110%;
+            min-height: 100vh; /* Asegura que el body al menos ocupe toda la altura */
         }
         .header {
             width: 100%;
@@ -50,6 +52,8 @@
             border-radius: 8px;
             align-items: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Asegurar que el contenedor no exceda la altura de la ventana */
+            margin-bottom: 60px; /* Espacio para el footer */
         }
         .back-button {
             color: #fff;
@@ -83,7 +87,7 @@
             background-color: #e0e0e0;
         }
         .image-upload {
-            margin-top: 25px;
+            margin-top: 20px;
             text-align: center;
         }
         .image-upload input[type="file"] {
@@ -108,7 +112,7 @@
             cursor: pointer;
             border-radius: 5px;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 2px;
         }
         .submit-button:hover {
             background-color: #0055aa;
@@ -158,7 +162,7 @@
             cursor: pointer;
         }
         .error-border {
-            border: 6px 
+            border: 2px solid red; /* Estilo completo para el borde de error */
         }
     </style>
 </head>
@@ -193,7 +197,7 @@
         
         <div class="form-group">
             <label for="tipo">Tipo:</label>
-            <input type="text" id="tipo" name= "tipo"placeholder="Nombre del Objeto" required>
+            <input type="text" id="tipo" name="tipo" placeholder="Nombre del Objeto" required>
         </div>
         
         <div class="form-group">
@@ -202,22 +206,27 @@
         </div>
 
         <div class="form-group">
-            <label for="pregunta">Pregunta de Seguridad:</label>
-            <input type="text" id="pregunta" name= "pregunta_seguridad" placeholder="Escribe una característica particular del objeto" required>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre">
+        </div>
+        
+        <div class="form-group">
+            <label for="correo">Ingrese su correo electrónico:</label>
+            <input type="email" id="correo" name="correo" placeholder="Por este medio se podrán contactar contigo" required>
         </div>
 
         <!-- Selector de imágenes -->
         <div class="image-upload">
-            <br>
-            <input type="file" id="file-input" name = "foto" multiple required><br><br>
-            <label for="file-input">Subir Imágenes (máximo 5)</label>
+           
+            <input type="file" id="file-input" name="foto" multiple required>
+            <label for="file-input">Subir Imagen</label>
         </div>
 
         <!-- Contenedor de previsualización de imágenes -->
         <div class="image-preview-container" id="image-preview-container"></div>
        
         <input type="hidden" name="publicado" value="1">
-        <input type="submit" value= "publicar" class= "publicar">
+        <input type="submit" value="Publicar" class="submit-button publicar">
        
     </form>
     </div>
@@ -230,140 +239,179 @@
     const backButton = document.querySelector('.back-button');
 
     backButton.addEventListener('click', function(event) {
-    // Verifica si alguno de los campos tiene contenido
-    const inputs = [fecha, lugar, tipo, descripcion, pregunta, fileInput];
-    const hasContent = inputs.some(input => input.value.trim() !== "") || fileInput.files.length > 0;
+        // Verifica si alguno de los campos tiene contenido
+        const inputs = [fecha, lugar, tipo, descripcion, numControl, fileInput];
+        const hasContent = inputs.some(input => {
+            if (input.type === 'file') {
+                return input.files.length > 0;
+            }
+            return input.value.trim() !== "";
+        });
 
-    // Si hay contenido en algún campo, muestra confirmación antes de salir
-    if (hasContent) {
-        const confirmExit = confirm("¿Está seguro que desea salir? Se perderán los datos ingresados.");
-        if (!confirmExit) {
-            event.preventDefault(); // Cancela la redirección si el usuario elige "Cancelar"
+        // Si hay contenido en algún campo, muestra confirmación antes de salir
+        if (hasContent) {
+            const confirmExit = confirm("¿Está seguro que desea salir? Se perderán los datos ingresados.");
+            if (!confirmExit) {
+                event.preventDefault(); // Cancela la redirección si el usuario elige "Cancelar"
+                return;
+            }
+        }
+
+        // Si no hay contenido o el usuario confirma, redirige a la pantalla anterior
+        window.location.href = 'inicioPublicaciones.php';
+    });
+
+    const fileInput = document.getElementById('file-input');
+    const previewContainer = document.getElementById('image-preview-container');
+
+    // Maneja la previsualización y límite de imágenes
+    fileInput.addEventListener('change', () => {
+        previewContainer.innerHTML = ''; // Limpiar previsualizaciones anteriores
+        const files = Array.from(fileInput.files);
+
+        if (files.length > 1) {
+            alert("Por cuestiones de almacenamiento, únicamente puedes ingresar 1 imagen.");
+            fileInput.value = ''; // Limpiar el campo de archivos si se excede el límite
             return;
         }
+
+        files.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imagePreview = document.createElement('div');
+                imagePreview.classList.add('image-preview');
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('remove-image');
+                removeButton.innerHTML = '&times;';
+                removeButton.onclick = () => {
+                    // Crear un nuevo DataTransfer para actualizar los archivos
+                    const dt = new DataTransfer();
+                    const updatedFiles = Array.from(fileInput.files).filter((_, i) => i !== index);
+                    updatedFiles.forEach(f => dt.items.add(f));
+                    fileInput.files = dt.files;
+
+                    previewContainer.removeChild(imagePreview); // Quita la previsualización
+                };
+
+                imagePreview.appendChild(img);
+                imagePreview.appendChild(removeButton);
+                previewContainer.appendChild(imagePreview);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    // Validaciones del formulario y restricciones de fecha
+    const submitButton = document.querySelector('.submit-button');
+    const fecha = document.getElementById('fecha');
+    const lugar = document.getElementById('lugar');
+    const tipo = document.getElementById('tipo');
+    const descripcion = document.getElementById('descripcion');
+    const numControl = document.getElementById('numControl');
+    const correo = document.getElementById('correo');
+    const today = new Date().toISOString().split('T')[0];
+    fecha.setAttribute('max', today);
+   
+    function setError(element, message) {
+        alert(message); // Muestra el mensaje de alerta
+        element.classList.add('error-border'); // Añade borde de error
+        element.focus(); // Enfoca el campo
     }
 
-    // Si no hay contenido o el usuario confirma, redirige a la pantalla anterior
-    window.location.href = 'inicioPantalla.html';
-});
+    // Limpia el borde de error al iniciar el llenado de un campo
+    function clearError(element) {
+        element.classList.remove('error-border');
+    }
 
-        const fileInput = document.getElementById('file-input');
-        const previewContainer = document.getElementById('image-preview-container');
+    // Función para validar el correo con regex
+    function validateEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
 
-        // Maneja la previsualización y límite de imágenes
-        fileInput.addEventListener('change', () => {
-            previewContainer.innerHTML = ''; // Limpiar previsualizaciones anteriores
-            const files = Array.from(fileInput.files);
+    // Escucha el evento de clic en el botón de enviar
+    submitButton.addEventListener('click', (event) => {
+        // Limpia cualquier error anterior
+        clearError(fecha);
+        clearError(lugar);
+        clearError(tipo);
+        clearError(descripcion);
+        clearError(numControl);
+        clearError(correo);
+        clearError(fileInput);
 
-            if (files.length > 5) {
-                alert("Puedes subir un máximo de 5 imágenes.");
-                fileInput.value = ''; // Limpiar el campo de archivos si se excede el límite
-                return;
-            }
-
-            files.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imagePreview = document.createElement('div');
-                    imagePreview.classList.add('image-preview');
-
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-
-                    const removeButton = document.createElement('button');
-                    removeButton.classList.add('remove-image');
-                    removeButton.innerHTML = '&times;';
-                    removeButton.onclick = () => {
-                        files.splice(index, 1); // Elimina el archivo del array
-                        previewContainer.removeChild(imagePreview); // Quita la previsualización
-                    };
-
-                    imagePreview.appendChild(img);
-                    imagePreview.appendChild(removeButton);
-                    previewContainer.appendChild(imagePreview);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-
-        // Validaciones del formulario y restricciones de fecha
-        const submitButton = document.querySelector('.submit-button');
-        const fecha = document.getElementById('fecha');
-        const lugar = document.getElementById('lugar');
-        const tipo = document.getElementById('tipo');
-        const descripcion = document.getElementById('descripcion');
-        const pregunta = document.getElementById('pregunta');
-        const today = new Date().toISOString().split('T')[0];
-        fecha.setAttribute('max', today);
-       
-        function setError(element, message) {
-            alert(message); // Muestra el mensaje de alerta
-            element.classList.add('error-border'); // Añade borde de error
-            element.focus(); // Enfoca el campo
+        // Validación de cada campo
+        if (!fecha.value) {
+            event.preventDefault();
+            setError(fecha, "Por favor, selecciona una fecha.");
+            return;
+        }
+        
+        if (!lugar.value.trim()) {
+            event.preventDefault();
+            setError(lugar, "Por favor, ingresa el lugar.");
+            return;
         }
 
-        // Limpia el borde de error al iniciar el llenado de un campo
-        function clearError(element) {
-            element.classList.remove('error-border');
+        if (!tipo.value.trim()) {
+            event.preventDefault();
+            setError(tipo, "Por favor, ingresa el tipo de objeto.");
+            return;
         }
 
-        // Escucha el evento de clic en el botón de enviar
-        submitButton.addEventListener('click', (event) => {
-            // Limpia cualquier error anterior
-            clearError(fecha);
-            clearError(lugar);
-            clearError(tipo);
-            clearError(descripcion);
-            clearError(pregunta);
-            clearError(fileInput);
+        if (!descripcion.value.trim()) {
+            event.preventDefault();
+            setError(descripcion, "Por favor, ingresa la descripción del objeto.");
+            return;
+        }
 
-            // Validación de cada campo
-            if (!fecha.value) {
-                event.preventDefault();
-                setError(fecha, "Por favor, selecciona una fecha.");
-                return;
-            }
-            
-            if (!lugar.value.trim()) {
-                event.preventDefault();
-                setError(lugar, "Por favor, ingresa el lugar.");
-                return;
-            }
+        if (!numControl.value.trim()) {
+            event.preventDefault();
+            setError(numControl, "Por favor, ingresa tu número de control.");
+            return;
+        }
 
-            if (!tipo.value.trim()) {
-                event.preventDefault();
-                setError(tipo, "Por favor, ingresa el tipo de objeto.");
-                return;
-            }
+        // Validar que numControl esté entre 19,000,000 y 24,999,999
+        const numControlValue = parseInt(numControl.value, 10);
+        if (isNaN(numControlValue) || numControlValue < 19000000 || numControlValue > 24999999) {
+            event.preventDefault();
+            setError(numControl, "El número de control no es válido");
+            return;
+        }
 
-            if (!descripcion.value.trim()) {
-                event.preventDefault();
-                setError(descripcion, "Por favor, ingresa la descripción del objeto.");
-                return;
-            }
+        if (!correo.value.trim()) {
+            event.preventDefault();
+            setError(correo, "Por favor, ingresa tu correo electrónico.");
+            return;
+        }
 
-            if (!pregunta.value.trim()) {
-                event.preventDefault();
-                setError(pregunta, "Por favor, ingresa la pregunta de seguridad.");
-                return;
-            }
+        // Validar el formato del correo
+        if (!validateEmail(correo.value.trim())) {
+            event.preventDefault();
+            setError(correo, "Por favor, ingresa un correo electrónico válido.");
+            return;
+        }
 
-            if (fileInput.files.length === 0) {
-                event.preventDefault();
-                setError(fileInput, "Por favor, selecciona al menos una imagen.");
-                return;
-            }
+        if (fileInput.files.length === 0) {
+            event.preventDefault();
+            setError(fileInput, "Por favor, selecciona al menos una imagen.");
+            return;
+        }
 
-            // Si todos los campos están completos, redirigir
-            window.location.href = 'inicioPublicaciones.php';
-        });
+        // Si todos los campos están completos y válidos, permitir el envío
+        // No redirigir manualmente, dejar que el formulario se envíe
+    });
 
-        // Limpia el borde rojo al empezar a llenar el campo
-        [fecha, lugar, tipo, descripcion, pregunta].forEach(input => {
-            input.addEventListener('input', () => clearError(input));
-        });
+    // Limpia el borde rojo al empezar a llenar el campo
+    [fecha, lugar, tipo, descripcion, numControl, correo].forEach(input => {
+        input.addEventListener('input', () => clearError(input));
+    });
 
-        fileInput.addEventListener('change', () => clearError(fileInput));
+    fileInput.addEventListener('change', () => clearError(fileInput));
 
     </script>
 </body>

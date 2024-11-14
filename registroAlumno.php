@@ -19,6 +19,7 @@
             align-items: center;
             height: 100vh;
             background-color: #f4f4f4;
+            position: relative;
         }
 
         /* Barra superior */
@@ -111,6 +112,7 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 8px;
+            transition: background-color 0.3s ease;
         }
         
         .register-button:hover {
@@ -148,7 +150,6 @@
             color: rgb(31, 156, 0);
             margin-bottom: 10px;
         }
-        
     </style>
 </head>
 <body>
@@ -162,23 +163,19 @@
     <!-- Contenedor de registro -->
     <div class="container">
         <h1>Te damos la bienvenida</h1>
+        <h1>Registro de Alumnos</h1>
         <?php
         include("C:/xampp/htdocs/EncuentraTec/modelo/conexion_BD.php");
         include("C:/xampp/htdocs/EncuentraTec/Controlador/controlador_registrar.php");
         ?>
         <form action="" method="POST" class="formulario">
 
+            <!-- Campo oculto para el rol -->
+            <input type="hidden" name="rol" value="alumno">
+
             <div class="form-group">
-                <label for="role-select">Selecciona tu Rol</label>
-                <select id="role-select" name="rol" required>
-                    <option value="alumno">Alumno</option>
-                    <option value="administrador">Administrador</option>
-                </select>
-            </div>
-            
-            <div id="control-container" class="form-group">
                 <label for="numero-control">Número de Control</label>
-                <input type="text" id="numero-control" name="num_control" placeholder="Num Control" maxlength="8">
+                <input type="text" id="numero-control" name="num_control" placeholder="Número de Control" maxlength="8" pattern="\d{8}" required>
             </div>
             
             <div class="form-group">
@@ -200,32 +197,11 @@
             <input class="register-button" type="submit" value="Registrar" name="registro">
            
         </form>
-        
-     <p class="login-link">Volver a la ventana de <a href="/EncuentraTec/vistaAdministrador.php">Administrador</a></p>
+
+        <p class="login-link">¿Ya tienes una cuenta? <a href="/EncuentraTec/index.php">Inicia Sesión</a></p>
     </div>
 
     <script>
-        const roleSelect = document.getElementById('role-select');
-        const controlContainer = document.getElementById('control-container');
-
-        roleSelect.addEventListener('change', () => {
-            // Muestra/oculta el campo según el rol seleccionado
-            if (roleSelect.value === 'alumno') {
-                controlContainer.style.display = 'block';
-            } else {
-                controlContainer.style.display = 'none';
-            }
-        });
-
-        // Inicializa la visibilidad del campo de número de control
-        window.addEventListener('DOMContentLoaded', () => {
-            if (roleSelect.value === 'alumno') {
-                controlContainer.style.display = 'block';
-            } else {
-                controlContainer.style.display = 'none';
-            }
-        });
-
         // Funcionalidad para mostrar/ocultar la contraseña
         const togglePassword = document.querySelector('.toggle-password');
         const passwordInput = document.getElementById('password');
@@ -239,6 +215,57 @@
                 togglePassword.innerHTML = '&#128065;'; // Ícono de ojo cerrado
             } else {
                 togglePassword.innerHTML = '&#128064;'; // Ícono de ojo abierto
+            }
+        });
+
+        // Validación del formulario (opcional pero recomendado)
+        const form = document.querySelector('.formulario');
+        form.addEventListener('submit', function(event) {
+            const numControl = document.getElementById('numero-control').value.trim();
+            const nombre = document.getElementById('nombre-completo').value.trim();
+            const correo = document.getElementById('correo-electronico').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const alerta = document.querySelector('.alerta');
+            const success = document.querySelector('.success');
+
+            // Limpiar mensajes previos
+            alerta.textContent = '';
+            success.textContent = '';
+
+            let valid = true;
+            let mensajes = [];
+
+            // Validar Número de Control
+            const numControlPattern = /^\d{8}$/;
+            if (!numControlPattern.test(numControl)) {
+                mensajes.push("El número de control debe tener exactamente 8 dígitos.");
+                valid = false;
+            }
+
+            // Validar Nombre
+            if (nombre.length < 3) {
+                mensajes.push("El nombre completo debe tener al menos 3 caracteres.");
+                valid = false;
+            }
+
+            // Validar Correo Electrónico
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(correo)) {
+                mensajes.push("El correo electrónico es inválido.");
+                valid = false;
+            }
+
+            // Validar Contraseña
+            if (password.length < 8) {
+                mensajes.push("La contraseña debe tener al menos 8 caracteres.");
+                valid = false;
+            }
+
+            if (!valid) {
+                event.preventDefault(); // Prevenir el envío del formulario
+                alerta.innerHTML = mensajes.join('<br>');
+            } else {
+                success.textContent = "Registro exitoso.";
             }
         });
     </script>

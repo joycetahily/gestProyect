@@ -28,22 +28,24 @@ if(!empty($_POST["publicado"])) {
     $lugar= $_POST["lugar"];
     $tipo = $_POST["tipo"];
     $descripcion = $_POST["descripcion"];
-    $preguntaSeg = $_POST["pregunta_seguridad"];
+    $correo = $_POST["correo"];
+    $nombre = $_POST["nombre"];
     $publicado = 1;
     
 
-        if(empty($fecha) || empty($lugar) || empty($tipo) || empty($descripcion || empty($preguntaSeg))) {
+        if(empty($fecha) || empty($lugar) || empty($tipo) || empty($descripcion) || empty($correo) || empty($nombre)) {
             echo '<div class="alerta">Uno de los campos está vacío</div>';
         } else {
             // Consulta para registrar al alumno
-            $sql = mysqli_query($conexion,"INSERT INTO acta_objeto (fecha, lugar, tipo, descripcion, pregunta_seguridad, foto, publicado) VALUES ('$fecha','$lugar','$tipo','$descripcion', '$preguntaSeg', '$imagen', $publicado)");
+            $sql = mysqli_query($conexion,"INSERT INTO acta_objeto (fecha, lugar, tipo, descripcion, foto, publicado, correo, nombre) VALUES ('$fecha','$lugar','$tipo','$descripcion', '$imagen', $publicado,'$correo', '$nombre')");
             //header('location: ')
             if($sql == 1) {
                 echo '<div class="success">objeto registrado correctamente</div>';
-                //echo "<script>window.location.href = 'pagina_inicio.php';</script>";
+                echo "<script>window.location.href = 'inicioPublicaciones.php';</script>";
             } else {
                 echo '<div class="alerta">Error al registrar</div>';
             }
         }
     }
     ?>
+    

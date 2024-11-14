@@ -4,20 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EncuentraTec</title>
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #fff;
-        }
-
-        /* Encabezado */
-        .header {
+         /* Encabezado */
+         .header {
             width: 100%;
             background-color: #1E2A6E;
             display: flex;
@@ -59,6 +49,17 @@
             border: 2px solid #000;
         }
 
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+
         /* Publicaciones */
         .post-container {
             display: flex;
@@ -69,7 +70,6 @@
             margin: 15px 0;
             padding: 15px;
             border-radius: 10px;
-            display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
@@ -84,8 +84,7 @@
             gap: 10px;
             margin-right: 180px;
         }
-
-
+        
         .post-image {
             width: 170px;
             height: 200px;
@@ -94,20 +93,17 @@
             flex-shrink: 0;
             overflow: hidden;
         }
-
         .post-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: 8px;
-            
         }
         .info-publi {
             display: flex;
             flex-direction: column;
             gap: 5px;
         }
-        
 
         .info-publi span, .info-pregunta span, .descripción span {
             background-color: #ccc;
@@ -142,52 +138,8 @@
             color: #000;
             width: fit-content;
             box-sizing: border-box;
-            height: ;
+            /* height: ; */ /* Eliminado por ser innecesario */
             max-width: 100%;
-            
-        }
-
-
-        .add-options {
-            position: fixed;
-            bottom: 120px;
-            right: 30px;
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .add-option {
-            background-color: #1E2A6E;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 14px;
-            color: #fff;
-            width: 80px;
-            text-decoration: none;
-        }
-
-        .add-option:hover {
-            background-color: #3A4A8E;
-        }
-
-        /* Botón agregar */
-        .add-button {
-            position: fixed;
-            bottom: 60px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background-color: #1E2A6E;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #fff;
-            cursor: pointer;
         }
 
         /* Footer */
@@ -203,7 +155,8 @@
             font-size: 14px;
         }
 
-
+        /* creo q también fue añadido */
+        
         /* Media Queries para ajustar en dispositivos pequeños */
         @media (max-width: 768px) {
             .post-container {
@@ -213,8 +166,8 @@
             }
 
             .post-image {
-                width: 60px;
-                height: 60px;
+                width: 90px;
+                height: 90px;
                 margin-bottom: 10px;
             }
 
@@ -227,45 +180,62 @@
                 right: 20px;
             }
         }
+
+        /* ------------------ Estilos del Botón Añadir Usuario ------------------ */
+                /* cambios */
+
+        .add-button {
+            position: fixed;
+            bottom: 60px; /* Ajustado para evitar superposición con el footer */
+            right: 20px;
+            background-color: #007BFF; /* Azul */
+            color: #000; /* Letras negras */
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000; /* Asegura que el botón esté por encima de otros elementos */
+            text-decoration: none; /* Eliminar subrayado del enlace */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .add-button:hover {
+            background-color: #0056b3; /* Azul más oscuro al pasar el cursor */
+            color: #fff; /* Cambiar letras a blanco al pasar el cursor */
+        }
+
     </style>
 </head>
-<body> 
 
-    <!-- Encabezado -->
-    <header class="header">
+<body>
+    <!-- boton de salida, todo el header --> 
+     <!-- Encabezado -->
+     <header class="header">
         <div class="header-logo">EncuentraTec</div>
-        <div class="header-icon" id="logout-icon">
-            <img src="ImagenesPW/icons8-cerrar-sesión-24.png" alt="cerrar-sesion">
+        <div class="header-icons">
+            <div class="header-icon">
+                <a href="index.php" aria-label="Inicio">
+                    <img src="ImagenesPW/icons8-cerrar-sesión-24.png" alt="cerrar-sesión">
+                </a>
+            </div>
         </div>
     </header>
     <?php
-    include("C:/xampp/htdocs/EncuentraTec/controlador/controlador_publicaciones.php");
+    include("C:/xampp/htdocs/EncuentraTec/Controlador/controlador_vistaAdmiP.php");
     include("C:/xampp/htdocs/EncuentraTec/modelo/conexion_BD.php");
     ?>
-    <!-- Publicaciones -->
-     
 
-    <div class="add-options" id="addOptions">
-        <button class="add-option" onclick="window.location.href='publicarObjeto.php'">Publicar</button>
-    </div>
-
-    <!-- Botón de agregar -->
-    <div class="add-button" onclick="toggleOptions()">+</div>
-
-    <script>
-        function toggleOptions() {
-            const options = document.getElementById('addOptions');
-            options.style.display = options.style.display === 'flex' ? 'none' : 'flex';
-        }
-        document.getElementById('logout-icon').addEventListener('click', function() {
-            window.location.href = 'index.php';
-        });
-    </script>
+        <!-- boton de usuario-->
+    <!-- Botón Añadir Usuario -->
+    <a href="registro.php" class="add-button">Añadir Usuario</a>
 
     <!-- Footer -->
     <footer class="footer">
         Instituto Tecnológico de Veracruz
     </footer>
 
-    </body>
-    </html>
+</body>
+</html>
